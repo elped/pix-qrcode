@@ -10,7 +10,6 @@ class FormatValues:
     def amount(amount: str):
         value_base = re.sub(r'[^0-9]', '', amount).upper()
         return '{:.2f}'.format((int(value_base) / 100)).__str__()
-        # return ('{:.2f}'.format(value_base / 100)).replace('.', ',')
 
     @staticmethod
     def mobile(mobile: str):

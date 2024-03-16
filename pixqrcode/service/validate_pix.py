@@ -1,7 +1,6 @@
-import re
-
 from pixqrcode.model.pix_error import PixError
 from pixqrcode.model.pix import Pix
+from pixqrcode.service.key_identify import key_mobile, key_cpf, key_email, key_random, key_cnpj
 from pixqrcode.utils.format_values import FormatValues
 
 
@@ -16,20 +15,19 @@ class ValidatePix:
         self.amount()
         self.city()
         self.reference_label()
-        self.mobile()
-        self.is_valid = True
+        self.is_valid = self.key()
         return self.is_valid
 
     def name(self):
         if not self.pix.name:
-            raise PixError("Nome nao informado")
+            raise PixError("nome não informado")
 
         self.pix.name = FormatValues.texts(self.pix.name)
         return True
 
     def city(self):
         if not self.pix.city:
-            raise PixError("cidade nao informada")
+            raise PixError("cidade não informada")
 
         self.pix.city = FormatValues.texts(self.pix.city)
         return True
@@ -47,20 +45,15 @@ class ValidatePix:
         else:
             self.pix.reference_label = FormatValues.texts_no_space(self.pix.reference_label)
 
-    def mobile(self):
-        if not self.pix.mobile:
-            raise PixError("telefone nao informado")
-
-        self.pix.mobile = FormatValues.mobile(self.pix.mobile)
-        if not re.match(r'^.55[\d]{3}', self.pix.mobile):
-            if not re.match(r'^55[\d]{3}', self.pix.mobile):
-                self.pix.mobile = f"+55{self.pix.mobile}"
-            else:
-                self.pix.mobile = f"+{self.pix.mobile}"
-
-        if 14 > len(self.pix.mobile) < 14:
-            raise PixError("telefone curto ou longo")
-
-        if not re.match(r'^.+55[\d]{3}', self.pix.mobile):
-            raise PixError("telefone sem o DDD")
-        return True
+    def key(self):
+        if not self.pix.key:
+            raise PixError("chave pix não informada")
+        local_is_valid = False
+        for func in [key_email, key_cpf, key_cnpj, key_mobile, key_random]:
+            exec_fun = func(self.pix.key)
+            if exec_fun['status']:
+                local_is_valid = True
+                self.pix.key = exec_fun['value']
+                self.pix.method = exec_fun['method']
+                break
+        return local_is_valid
