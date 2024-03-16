@@ -1,6 +1,6 @@
 # Pix QRCode - Python
 
-#### Versao: __1.0__
+#### Versao: __1.1.0__
 
 Biblioteca para a geração de codigos QR (BRCode como chamados na documentação do BACEN) a fins de facilitar a exibição para pagamentos ao consumidor.
 
