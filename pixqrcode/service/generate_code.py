@@ -9,7 +9,7 @@ class GenerateCode:
         self.map_guis = {
             "mobile": "3600",
             "cpf": "3300",
-            "cpnj": "3600",
+            "cnpj": "3600",
             "uuid": "5800",
             "email": "4600"
         }
